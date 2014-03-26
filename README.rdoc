@@ -1,0 +1,21 @@
+= ruby_data_sync
+
+{<img src="https://travis-ci.org/skandragon/ruby_data_sync.png?branch=master" alt="Build Status" />}[https://travis-ci.org/skandragon/ruby_data_sync]
+{<img src="https://gemnasium.com/skandragon/ruby_data_sync.png" alt="Dependency Status" />}[https://gemnasium.com/skandragon/ruby_data_sync]
+{<img src="https://codeclimate.com/github/skandragon/ruby_data_sync.png" />}[https://codeclimate.com/github/skandragon/ruby_data_sync]
+
+This gem provides a multi-way data sync between databases and devices.
+It does not require any specific database, but insteads asumes data to be
+synced is represented by a Ruby hash.
+
+Each database is called a "device" for lack of a better term.  Syncing between
+devices happens two at a time.  The system is designed for a star
+arrangement, where all devices sync with one central device.
+
+Each object has application data and sync metadata.  The sync metadata is
+used during the sync process, while the application data is treated as
+semi-opaque by the sync system.
+
+== Copyright
+
+Copyright (c) 2014 Michael Graff. See LICENSE.txt for further details.
