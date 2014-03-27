@@ -1,2 +1,2 @@
-class RubyDataSync
+module RubyDataSync
 end

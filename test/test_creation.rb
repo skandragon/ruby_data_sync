@@ -1,8 +1,9 @@
 require 'helper'
 
-class TestRubyDataSync < Minitest::Test
+class RubyDataSync::TestEngine < Minitest::Test
   def test_creation_without_arguments
-    rds = RubyDataSync.new
-    assert rds
+    assert_raises (ArgumentError) do
+      rds = RubyDataSync::Engine.new
+    end
   end
 end
