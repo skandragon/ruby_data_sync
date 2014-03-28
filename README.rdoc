@@ -12,9 +12,35 @@ Each database is called a "device" for lack of a better term.  Syncing between
 devices happens two at a time.  The system is designed for a star
 arrangement, where all devices sync with one central device.
 
+= Metadata
+
 Each object has application data and sync metadata.  The sync metadata is
 used during the sync process, while the application data is treated as
 semi-opaque by the sync system.
+
+1. Each record must have a uuid.  This is typically created with the record.
+2. Each record must have a last-sync-time, which is per peer.  It may be stored
+with the record (for a client that syncs with a server) or in a separate table
+(for the server).
+3. Each record must have a modification time that changes when it is modified
+locally.  When syncing, it is updated to the greater of the two peer's
+modification times.
+4. A table of deleted record uuids must be maintained, and transmitted to the
+peer during sync.  If the peer does not have that record, it need not be
+propagated, but otherwise it must be ensured that the deletion entry is
+retained until all known peers have received it.
+
+= Data Flow (client point of view)
+
+1. Establish network session.
+2. Generate a list of uuids and modification times for local objects which have changed since last sync.
+3. Receive similar list from server.
+4. For each new object (we have it, the remote does not) create an object.
+5. For each object on the remote but not local, request it.
+6. For each object changed locally, but not remotely, transmit it.
+7. For each object changed on the remote, but not locally, receive it.
+8. For conflicts, use the last modified time, and log that there was a conflict.
+9.
 
 == Copyright
 
