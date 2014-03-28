@@ -30,21 +30,42 @@ used during the sync process, while the application data is treated as
 semi-opaque by the sync system.
 
 Modificaitons to the metadata will not update the modification time
-of the record unless otherwise
+of the object unless otherwise
 
-#. Each record must have a UUID.  This is the only identifier for this
-   record, even if other local identifiers are added later to establish
+#. Each object must have a UUID.  This is the only identifier for this
+   object, even if other local identifiers are added later to establish
    relationships between objects.
-#. Each record must have a last-sync-time, which is maintained per peer.
-   It may be stored with the record (for a client that syncs with a server)
+#. Each object must have a last-sync-time, which is maintained per peer.
+   It may be stored with the object (for a client that syncs with a server)
    or in a separate table (for the server).
-#. Each record must have a modification time that changes when it is
+#. Each object must have a modification time that changes when it is
    modified locally.  When syncing, it is updated to the greater of the
    two peer's modification times.
-#. A table of deleted record UUIDs must be maintained, and transmitted
-   to the peer during sync.  If the peer does not have that record,
+#. A table of deleted object UUIDs must be maintained, and transmitted
+   to the peer during sync.  If the peer does not have that object,
    it need not be propagated, but otherwise it must be ensured that
    the deletion entry is retained until all known peers have received it.
+
+----------------
+Applicaiton Data
+----------------
+
+The exact format of the objects is application dependent.  Relationships
+between objects may have to be reconstructed on either end, and each
+object may need some transformation before transmitting it to a peer.
+
+A very common SQL-style object graph may have a one-to-one, one-to-many,
+or many-to-many relationship.  Each of these may be handled in different
+ways, including packaging the concept of an "object" to include related,
+owned data and transmitting this as the synced object.  This is a workable
+solution for one-to-one and one-to-many relationships in many cases.
+
+Another approach would be to denormalize and re-establish the relationships
+on receiving.  This would be workable for simple many-to-many relationships,
+such as a tagging system.  Denormalizing the data and transmitting the
+tags on an object as UUIDs, or as names, could assist in recreating this
+graph.  However, it would require transmitting data in a dependency graph
+order, or a final commit fix-up phase.
 
 ---------
 Data Flow
@@ -53,13 +74,13 @@ Data Flow
 #. Establish network session.  One side will be the master, and one side will
    be the client.  Often, a server which many clients sync to will be
    forced to be a master.
-#. Generate a list of UUIDs and modification times for records which have a
+#. Generate a list of UUIDs and modification times for objects which have a
    modification time after the last time we have synced with this peer.
    (master, client)
-#. Generate a list of deleted records.
+#. Generate a list of deleted objects.
 #. Master will transmit its version of the these lists to the client.
-#. Client will delete any records which the master says are deleted.  If there
-   are local modifications, it may log a conflict, but the record should
+#. Client will delete any objects which the master says are deleted.  If there
+   are local modifications, it may log a conflict, but the object should
    still be deleted.
 #. For each object the client has but the master does not, it should be
    transmitted to the master.
@@ -69,8 +90,8 @@ Data Flow
    it.
 #. For each object changed on the client but not on the master, transmit
    it.
-#. If a data item has been changed on both the master and the client, use
-   the record with the most recently modified timestamp, and log that there
+#. If an object has been changed on both the master and the client, use
+   the object with the most recently modified timestamp, and log that there
    was a conflict.
 
 ---------
