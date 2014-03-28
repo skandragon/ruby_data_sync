@@ -1,3 +1,5 @@
+.. ::include: isonm.txt
+
 ==============
 ruby_data_sync
 ==============
@@ -70,4 +72,4 @@ Data Flow
 Copyright
 ---------
 
-Copyright &copy; 2014 Michael Graff. See LICENSE.txt for further details.
+Copyright |copy| 2014 Michael Graff. See LICENSE.txt for further details.
