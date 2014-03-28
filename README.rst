@@ -13,6 +13,10 @@ ruby_data_sync
 .. |codeclimate| image:: https://codeclimate.com/github/skandragon/ruby_data_sync.png
 .. _codeclimate: https://codeclimate.com/github/skandragon/ruby_data_sync
 
+------------
+Introduction
+------------
+
 This gem provides a multi-way data sync between databases and devices.
 It does not require any specific database, but insteads asumes data to be
 synced is represented by a Ruby hash.
@@ -20,6 +24,8 @@ synced is represented by a Ruby hash.
 Each database is called a "device" for lack of a better term.  Syncing between
 devices happens two at a time.  The system is designed for a star
 arrangement, where all devices sync with one central device.
+
+.. note:: This project is nowhere near production ready, and may not even have much code yet.
 
 --------
 Metadata
