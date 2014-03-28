@@ -1,5 +1,3 @@
-.. ::include: isonm.txt
-
 ==============
 ruby_data_sync
 ==============
@@ -60,16 +58,23 @@ Data Flow
    (master, client)
 #. Generate a list of deleted records.
 #. Master will transmit its version of the these lists to the client.
-#. Client will
-#. For each new object (we have it, the remote does not) create an object.
-#. For each object on the remote but not local, request it.
-#. For each object changed locally, but not remotely, transmit it.
-#. For each object changed on the remote, but not locally, receive it.
-#. For conflicts, use the last modified time of the two records,
-   and log that there was a conflict.
+#. Client will delete any records which the master says are deleted.  If there
+   are local modifications, it may log a conflict, but the record should
+   still be deleted.
+#. For each object the client has but the master does not, it should be
+   transmitted to the master.
+#. For each object the master has but the client does not, it should be
+   received from the master.
+#. For each object changed on the master, but not on the client, receive
+   it.
+#. For each object changed on the client but not on the master, transmit
+   it.
+#. If a data item has been changed on both the master and the client, use
+   the record with the most recently modified timestamp, and log that there
+   was a conflict.
 
 ---------
 Copyright
 ---------
 
-Copyright |copy| 2014 Michael Graff. See LICENSE.txt for further details.
+Copyright (c) 2014 Michael Graff. See LICENSE.txt for further details.
