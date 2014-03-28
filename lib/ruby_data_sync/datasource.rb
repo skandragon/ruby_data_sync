@@ -1,9 +1,8 @@
 module RubyDataSync
   class Datasource
-    attr_reader :last_sync_date
+    attr_accessor :last_sync_date
 
-    def initialize(last_sync)
-      @last_sync_date = last_sync
+    def initialize
     end
 
     #
@@ -15,11 +14,22 @@ module RubyDataSync
     #   uuid: 'object uuid',
     #   synced: Unix timestamp of last sync with this peer,
     #   modified: Unix timestamp of last modification time,
-    #
     # }
+    #
     def find_changed_objects
     end
 
+    #
+    # Find the set of objects which have deleted since the last sync
+    # with this peer.
+    #
+    # Expected return format is an array of:
+    # {
+    #   uuid: 'object uuid',
+    #   synced: Unix timestamp of last sync with this peer,
+    #   deleted: Unix timestamp of the deletion time,
+    # }
+    #
     def find_deleted_objects
     end
 
