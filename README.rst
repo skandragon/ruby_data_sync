@@ -32,16 +32,16 @@ semi-opaque by the sync system.
 Modificaitons to the metadata will not update the modification time
 of the record unless otherwise
 
-1. Each record must have a UUID.  This is the only identifier for this
+#. Each record must have a UUID.  This is the only identifier for this
    record, even if other local identifiers are added later to establish
    relationships between objects.
-1. Each record must have a last-sync-time, which is maintained per peer.
+#. Each record must have a last-sync-time, which is maintained per peer.
    It may be stored with the record (for a client that syncs with a server)
    or in a separate table (for the server).
-1. Each record must have a modification time that changes when it is
+#. Each record must have a modification time that changes when it is
    modified locally.  When syncing, it is updated to the greater of the
    two peer's modification times.
-1. A table of deleted record UUIDs must be maintained, and transmitted
+#. A table of deleted record UUIDs must be maintained, and transmitted
    to the peer during sync.  If the peer does not have that record,
    it need not be propagated, but otherwise it must be ensured that
    the deletion entry is retained until all known peers have received it.
@@ -50,20 +50,20 @@ of the record unless otherwise
 Data Flow
 ---------
 
-1. Establish network session.  One side will be the master, and one side will
+#. Establish network session.  One side will be the master, and one side will
    be the client.  Often, a server which many clients sync to will be
    forced to be a master.
-1. Generate a list of UUIDs and modification times for records which have a
+#. Generate a list of UUIDs and modification times for records which have a
    modification time after the last time we have synced with this peer.
    (master, client)
-1. Generate a list of deleted records.
-1. Master will transmit its version of the these lists to the client.
-1. Client will
-1. For each new object (we have it, the remote does not) create an object.
-1. For each object on the remote but not local, request it.
-1. For each object changed locally, but not remotely, transmit it.
-1. For each object changed on the remote, but not locally, receive it.
-1. For conflicts, use the last modified time of the two records,
+#. Generate a list of deleted records.
+#. Master will transmit its version of the these lists to the client.
+#. Client will
+#. For each new object (we have it, the remote does not) create an object.
+#. For each object on the remote but not local, request it.
+#. For each object changed locally, but not remotely, transmit it.
+#. For each object changed on the remote, but not locally, receive it.
+#. For conflicts, use the last modified time of the two records,
    and log that there was a conflict.
 
 ---------
