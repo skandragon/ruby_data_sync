@@ -18,12 +18,14 @@ Introduction
 ------------
 
 This gem provides a multi-way data sync between databases and devices.
-It does not require any specific database, but insteads asumes data to be
+It does not require any specific database, but insteads assumes data to be
 synced is represented by a Ruby hash.
 
-Each database is called a "device" for lack of a better term.  Syncing between
-devices happens two at a time.  The system is designed for a star
-arrangement, where all devices sync with one central device.
+Syncing between devices happens two at a time.  One side acts as a master,
+while the other side may act as a client.  The system is designed for a star
+arrangement, where all devices sync with one central device.  Other patterns
+may work, however each device must maintain an object sync time that is per
+peer.  This mode is currently untested.
 
 .. note:: This project is nowhere near production ready, and may not even have much code yet.
 
@@ -36,21 +38,25 @@ used during the sync process, while the application data is treated as
 semi-opaque by the sync system.
 
 Modificaitons to the metadata will not update the modification time
-of the object unless otherwise
+of the object unless otherwise noted.
 
 #. Each object must have a UUID.  This is the only identifier for this
    object, even if other local identifiers are added later to establish
-   relationships between objects.
+   relationships between objects.  Once created, it should never be modified.
 #. Each object must have a last-sync-time, which is maintained per peer.
    It may be stored with the object (for a client that syncs with a server)
-   or in a separate table (for the server).
+   or in a separate table (for a master).
 #. Each object must have a modification time that changes when it is
-   modified locally.  When syncing, it is updated to the greater of the
-   two peer's modification times.
-#. A table of deleted object UUIDs must be maintained, and transmitted
-   to the peer during sync.  If the peer does not have that object,
+   modified locally.  When syncing, it is updated only if the application
+   data changes due to receiving an update for this item, and is set to
+   the value provided by the transmitting peer.
+#. A table of locally deleted object UUIDs must be maintained.
+   If the peer does not have that object,
    it need not be propagated, but otherwise it must be ensured that
    the deletion entry is retained until all known peers have received it.
+   One way to do this is to record the time an object was deleted, and
+   once all known peers have synced after that time, all peers have recevied
+   the deletion notification.
 
 ----------------
 Applicaiton Data
@@ -83,11 +89,14 @@ Data Flow
 #. Generate a list of UUIDs and modification times for objects which have a
    modification time after the last time we have synced with this peer.
    (master, client)
-#. Generate a list of deleted objects.
+#. Generate a list of deleted objects which have been deleted since our last
+   sync.
 #. Master will transmit its version of the these lists to the client.
 #. Client will delete any objects which the master says are deleted.  If there
    are local modifications, it may log a conflict, but the object should
    still be deleted.
+#. Client will instruct the master to delete any objects which the client has
+   deleted locally.
 #. For each object the client has but the master does not, it should be
    transmitted to the master.
 #. For each object the master has but the client does not, it should be
