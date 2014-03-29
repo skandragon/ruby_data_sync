@@ -2,8 +2,8 @@ require 'helper'
 
 class RubyDataSync::MemoryDatasource::TestItem < Minitest::Test
   def test_new
-    item = RubyDataSync::MemoryDatasource::Item.new('flarg')
-    assert_equal 'flarg', item.name
+    item = RubyDataSync::MemoryDatasource::Item.new({ name: 'flarg'})
+    assert_equal 'flarg', item.data[:name]
     assert item.uuid
     assert_operator 0, :<, item.created_at
     assert_operator 0, :<, item.modified_at
@@ -38,7 +38,7 @@ class RubyDataSync::TestMemoryDatasource < Minitest::Test
     assert_equal ds.deleted_items[0].uuid, item.uuid
   end
 
-  def test_items_modified
+  def test_modified_since
     ds = RubyDataSync::MemoryDatasource.new
 
     target_count = 20
@@ -54,7 +54,7 @@ class RubyDataSync::TestMemoryDatasource < Minitest::Test
     assert_equal 0, ds.modified_since(since).count
   end
 
-  def test_items_deleted
+  def test_deleted_since
     ds = RubyDataSync::MemoryDatasource.new
 
     target_count = 20
@@ -69,5 +69,22 @@ class RubyDataSync::TestMemoryDatasource < Minitest::Test
 
     since = ds.deleted_items.map(&:deleted_at).max + 1
     assert_equal 0, ds.deleted_since(since).count
+  end
+
+  def test_unsynced
+    ds = RubyDataSync::MemoryDatasource.new
+
+    target_count = 20
+
+    target_count.times do
+      item = ds.create_item
+    end
+
+    now = Time.now.to_f
+    (target_count / 3).times do |index|
+      ds.items[index].synced_at = now
+    end
+
+    assert_equal target_count - (target_count / 3), ds.unsynced.count
   end
 end
