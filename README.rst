@@ -29,6 +29,16 @@ peer.  This mode is currently untested.
 
 .. note:: This project is nowhere near production ready, and may not even have much code yet.
 
+-----------------
+Master and Client
+-----------------
+
+The device which initiates the connection is the client.  The receiver of
+incoming sync requests is the master.
+
+In a future protocol change, it may be possible to negotiate which end is
+which, or have a voting process.
+
 --------
 Metadata
 --------
