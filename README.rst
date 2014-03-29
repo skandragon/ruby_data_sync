@@ -92,23 +92,22 @@ Data Flow
 #. Generate a list of deleted objects which have been deleted since our last
    sync.
 #. Master will transmit its version of the these lists to the client.
-#. Process deletions.
-  #. Client will delete any objects which the master says are deleted.  If there
-     are local modifications, it may log a conflict, but the object should
-     still be deleted.
-  #. Client will instruct the master to delete any objects which the client has
-     deleted locally.
-#. Process additions.
-  #. For each object the client has but the master does not, it should be
-     transmitted to the master.
-  #. For each object the master has but the client does not, it should be
-     received from the master.
-#. Transmit modifications.
-  #. For each object changed on the master, but not on the client, receive it.
-  #. For each object changed on the client but not on the master, transmit it.
-  #. If an object has been changed on both the master and the client, use
-     the object with the most recently modified timestamp, and log that there
-     was a conflict.
+#. Client will delete any objects which the master says are deleted.  If there
+   are local modifications, it may log a conflict, but the object should
+   still be deleted.
+#. Client will instruct the master to delete any objects which the client has
+   deleted locally.
+#. For each object the client has but the master does not, it should be
+   transmitted to the master.
+#. For each object the master has but the client does not, it should be
+   received from the master.
+#. For each object changed on the master, but not on the client, receive
+   it.
+#. For each object changed on the client but not on the master, transmit
+   it.
+#. If an object has been changed on both the master and the client, use
+   the object with the most recently modified timestamp, and log that there
+   was a conflict.
 
 ---------
 Copyright
